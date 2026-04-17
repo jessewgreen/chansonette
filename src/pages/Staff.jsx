@@ -191,7 +191,7 @@ export default function Staff({ user }) {
   const [users,     setUsers]     = useState([])
   const [showForm,  setShowForm]  = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const [editForm,  setEditForm]  = useState({ name: '', phone: '', cell: '', address: '', role: 'groom' })
+  const [editForm,  setEditForm]  = useState({ name: '', email: '', phone: '', cell: '', address: '', role: 'groom' })
   const [saving,    setSaving]    = useState(false)
   const [error,     setError]     = useState('')
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'groom', phone: '', cell: '', address: '' })
@@ -207,7 +207,7 @@ export default function Staff({ user }) {
       await createUser(form)
       const updated = await getUsers()
       setUsers(updated)
-      setForm({ name: '', email: '', password: '', role: 'groom', phone: '', cell: '' })
+      setForm({ name: '', email: '', password: '', role: 'groom', phone: '', cell: '', address: '' })
       setShowForm(false)
     } catch {
       setError('Failed to add staff member. Email may already be in use.')
@@ -216,7 +216,7 @@ export default function Staff({ user }) {
 
   function openEdit(u) {
     setEditingId(u.id)
-    setEditForm({ name: u.name || '', phone: u.phone || '', cell: u.cell || '', address: u.address || '', role: u.role || 'groom' })
+    setEditForm({ name: u.name || '', email: u.email || u.id || '', phone: u.phone || '', cell: u.cell || '', address: u.address || '', role: u.role || 'groom' })
   }
 
   async function handleSaveEdit(e) {
@@ -305,7 +305,7 @@ export default function Staff({ user }) {
           <button type="button" onClick={() => setShowForm(false)} style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>✕</button>
           <h3 style={{ fontFamily: 'Georgia', fontWeight: 'normal', marginBottom: '1rem' }}>Add Staff Member</h3>
           <div className="form-group"><label>Full Name</label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required /></div>
-          <div className="form-group"><label>Email or Username (login)</label><input type="text" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required /></div>
+          <div className="form-group"><label>Email address (login)</label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="user@example.com" required /></div>
           <div className="form-group"><label>Physical Address</label><input type="text" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Street, city, state" /></div>
           <div className="form-group"><label>Phone Number</label><input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Optional" /></div>
           <div className="form-group"><label>Cell Phone</label><input type="tel" value={form.cell} onChange={e => setForm(f => ({ ...f, cell: e.target.value }))} placeholder="Optional" /></div>
