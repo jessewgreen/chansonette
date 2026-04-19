@@ -198,22 +198,33 @@ export default function Admin({ user, onNavigate, navigateToResource }) {
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '220px 260px 150px 170px auto', gap: '0.75rem', padding: '0.75rem 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)' }}>Name</span>
+                <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)' }}>Email / Login</span>
+                <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)' }}>Phone</span>
+                <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)' }}>Role</span>
+                <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)', justifySelf: 'end' }}>Actions</span>
+              </div>
               {users.map(u => {
                 const allRoles = [u.role, ...(u.additionalRoles || [])]
                 const dispRole = allRoles.includes('rider') ? 'rider'
                   : u.role !== 'admin' ? u.role
                   : allRoles.find(r => r !== 'admin') || 'admin'
-                const BADGE_LABELS = { barn_manager: 'Barn Mgr', admin: 'Admin', rider: 'Rider', groom: 'Groom' }
+                const BADGE_LABELS = { barn_manager: 'Barn Manager', admin: 'Administrator', rider: 'Rider', groom: 'Groom' }
                 const badgeClass = dispRole === 'barn_manager' ? 'badge-gold' : dispRole === 'rider' ? 'badge-blue' : 'badge-green'
                 const roleLabel = BADGE_LABELS[dispRole] || ROLE_OPTIONS.find(o => o.value === dispRole)?.label || dispRole
                 return (
-                  <div key={u.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border)' }}>
-                    <span style={{ fontFamily: 'Arial', fontSize: '0.875rem', width: '180px', flexShrink: 0 }}>{u.name}</span>
-                    <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)', width: '240px', flexShrink: 0 }}>{u.id}</span>
-                    <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)', width: '130px', flexShrink: 0 }}>{u.phone || '—'}</span>
-                    <span className={`badge ${badgeClass}`}>{roleLabel}</span>
-                    <button type="button" className="btn btn-outline btn-sm" onClick={() => openStaffEdit(u)}>Edit</button>
-                    <button type="button" className="btn btn-outline btn-sm" style={{ color: '#e87070', borderColor: 'rgba(232,112,112,0.35)' }} onClick={() => handleDeleteStaff(u.id, u.name)}>Remove</button>
+                  <div key={u.id} style={{ display: 'grid', gridTemplateColumns: '220px 260px 150px 170px auto', gap: '0.75rem', alignItems: 'center', padding: '0.75rem 0', borderBottom: '1px solid var(--border)' }}>
+                    <span style={{ fontFamily: 'Arial', fontSize: '0.875rem', wordBreak: 'break-word' }}>{u.name}</span>
+                    <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)', wordBreak: 'break-all' }}>{u.id}</span>
+                    <span style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)' }}>{u.phone || '—'}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+                      <span className={`badge ${badgeClass}`} style={{ width: '100%', justifyContent: 'flex-start' }}>{roleLabel}</span>
+                    </span>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                      <button type="button" className="btn btn-outline btn-sm" onClick={() => openStaffEdit(u)}>Edit</button>
+                      <button type="button" className="btn btn-outline btn-sm" style={{ color: '#e87070', borderColor: 'rgba(232,112,112,0.35)' }} onClick={() => handleDeleteStaff(u.id, u.name)}>Remove</button>
+                    </div>
                   </div>
                 )
               })}
