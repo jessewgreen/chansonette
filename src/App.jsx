@@ -50,7 +50,7 @@ function App() {
       case 'horses':    return <Horses user={user} />
       case 'shows':     return <Shows user={user} />
       case 'staff':     return canManageStaff ? <Staff user={user} /> : <Dashboard user={user} onNavigate={setCurrentPage} />
-      case 'admin':       return isAdmin ? <Admin user={user} onNavigate={setCurrentPage} /> : <Dashboard user={user} onNavigate={setCurrentPage} />
+      case 'admin':       return isAdmin ? <Admin user={user} onNavigate={setCurrentPage} navigateToResource={page => { setResourcesSubPage(page); setCurrentPage('packinglist') }} /> : <Dashboard user={user} onNavigate={setCurrentPage} />
       case 'packinglist':     return <Resources user={user} canManageStaff={canManageStaff} initialSubPage={resourcesSubPage} onSubPageChange={setResourcesSubPage} />
       case 'ridingschedule': return <RidingSchedule user={user} />
       case 'shoppinglist':   return <ShoppingList user={user} />

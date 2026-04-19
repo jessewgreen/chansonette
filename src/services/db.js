@@ -24,10 +24,10 @@ export async function signOutUser() {
   await signOut(auth)
 }
 
-export async function createUser({ email, name, role, password, phone = '', cell = '', address = '' }) {
+export async function createUser({ email, name, role, password, phone = '', homePhone = '', cell = '', address = '' }) {
   const key = email.toLowerCase().trim()
   await createUserWithEmailAndPassword(auth, key, password)
-  await setDoc(doc(db, 'users', key), { name, role, phone, cell, address, email: key, mustChangePassword: true })
+  await setDoc(doc(db, 'users', key), { name, role, phone, homePhone, cell, address, email: key, mustChangePassword: true })
 }
 
 export async function getUsers() {

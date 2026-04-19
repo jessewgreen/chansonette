@@ -191,10 +191,10 @@ export default function Staff({ user }) {
   const [users,     setUsers]     = useState([])
   const [showForm,  setShowForm]  = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const [editForm,  setEditForm]  = useState({ name: '', email: '', phone: '', cell: '', address: '', role: 'groom' })
+  const [editForm,  setEditForm]  = useState({ name: '', email: '', phone: '', homePhone: '', cell: '', address: '', role: 'groom' })
   const [saving,    setSaving]    = useState(false)
   const [error,     setError]     = useState('')
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'groom', phone: '', cell: '', address: '' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'groom', phone: '', homePhone: '', cell: '', address: '' })
   const [photoModalId, setPhotoModalId] = useState(null)
 
   useEffect(() => { getUsers().then(setUsers).catch(() => {}) }, [])
@@ -207,7 +207,7 @@ export default function Staff({ user }) {
       await createUser(form)
       const updated = await getUsers()
       setUsers(updated)
-      setForm({ name: '', email: '', password: '', role: 'groom', phone: '', cell: '', address: '' })
+      setForm({ name: '', email: '', password: '', role: 'groom', phone: '', homePhone: '', cell: '', address: '' })
       setShowForm(false)
     } catch {
       setError('Failed to add staff member. Email may already be in use.')
@@ -216,7 +216,7 @@ export default function Staff({ user }) {
 
   function openEdit(u) {
     setEditingId(u.id)
-    setEditForm({ name: u.name || '', email: u.email || u.id || '', phone: u.phone || '', cell: u.cell || '', address: u.address || '', role: u.role || 'groom' })
+    setEditForm({ name: u.name || '', email: u.email || u.id || '', phone: u.phone || '', homePhone: u.homePhone || '', cell: u.cell || '', address: u.address || '', role: u.role || 'groom' })
   }
 
   async function handleSaveEdit(e) {
@@ -307,7 +307,8 @@ export default function Staff({ user }) {
           <div className="form-group"><label>Full Name</label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required /></div>
           <div className="form-group"><label>Email address (login)</label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="user@example.com" required /></div>
           <div className="form-group"><label>Physical Address</label><input type="text" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="Street, city, state" /></div>
-          <div className="form-group"><label>Phone Number</label><input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Optional" /></div>
+          <div className="form-group"><label>Work Phone</label><input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Optional" /></div>
+          <div className="form-group"><label>Home Phone</label><input type="tel" value={form.homePhone} onChange={e => setForm(f => ({ ...f, homePhone: e.target.value }))} placeholder="Optional" /></div>
           <div className="form-group"><label>Cell Phone</label><input type="tel" value={form.cell} onChange={e => setForm(f => ({ ...f, cell: e.target.value }))} placeholder="Optional" /></div>
           <div className="form-group"><label>Password</label><input type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required /></div>
           <div className="form-group">
@@ -366,6 +367,7 @@ export default function Staff({ user }) {
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem 1rem', fontFamily: 'Arial', fontSize: '0.78rem', color: '#2d3a4a' }}>
                         {u.email && <span>{u.email}</span>}
                         {u.phone && <span>📞 {u.phone}</span>}
+                        {u.homePhone && <span>🏠 {u.homePhone}</span>}
                         {u.cell && <span>📱 {u.cell}</span>}
                       </div>
                       {u.address && <div style={{ marginTop: '0.4rem', fontFamily: 'Arial', fontSize: '0.78rem', color: '#2d3a4a' }}>📍 {u.address}</div>}
@@ -413,7 +415,8 @@ export default function Staff({ user }) {
             <div className="form-group"><label>Full Name</label><input value={editForm.name} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))} required /></div>
             <div className="form-group"><label>Email</label><input type="text" value={users.find(u => u.id === editingId)?.email || ''} disabled /></div>
             <div className="form-group"><label>Physical Address</label><input type="text" value={editForm.address} onChange={e => setEditForm(f => ({ ...f, address: e.target.value }))} placeholder="Street, city, state" /></div>
-            <div className="form-group"><label>Phone Number</label><input type="tel" value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} placeholder="Optional" /></div>
+            <div className="form-group"><label>Work Phone</label><input type="tel" value={editForm.phone} onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))} placeholder="Optional" /></div>
+            <div className="form-group"><label>Home Phone</label><input type="tel" value={editForm.homePhone} onChange={e => setEditForm(f => ({ ...f, homePhone: e.target.value }))} placeholder="Optional" /></div>
             <div className="form-group"><label>Cell Phone</label><input type="tel" value={editForm.cell} onChange={e => setEditForm(f => ({ ...f, cell: e.target.value }))} placeholder="Optional" /></div>
             <div className="form-group">
               <label>Role</label>
