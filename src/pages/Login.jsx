@@ -37,12 +37,12 @@ function ChangePassword({ user, onDone }) {
             Welcome, {user.name}. Please choose a new password to continue.
           </p>
           <div className="form-group">
-            <label>New Password</label>
-            <input type="password" value={newPass} onChange={e => { setNewPass(e.target.value); setError('') }} required placeholder="At least 6 characters" />
+            <label htmlFor="new-password">New Password</label>
+            <input id="new-password" name="newPass" type="password" value={newPass} onChange={e => { setNewPass(e.target.value); setError('') }} required placeholder="At least 6 characters" />
           </div>
           <div className="form-group">
-            <label>Confirm Password</label>
-            <input type="password" value={confirm} onChange={e => { setConfirm(e.target.value); setError('') }} required placeholder="Repeat password" />
+            <label htmlFor="confirm-password">Confirm Password</label>
+            <input id="confirm-password" name="confirm" type="password" value={confirm} onChange={e => { setConfirm(e.target.value); setError('') }} required placeholder="Repeat password" />
           </div>
           {error && <p className="error-msg">{error}</p>}
           <button type="submit" className="submit-btn" disabled={saving}>
@@ -105,12 +105,12 @@ export default function Login({ onLogin }) {
             Sign in to access the portal.
           </p>
           <div className="form-group">
-            <label>Email or Username</label>
-            <input type="text" value={email} onChange={e => { setEmail(e.target.value); setError('') }} required placeholder="email or username" />
+            <label htmlFor="login-email">Email or Username</label>
+            <input id="login-email" name="email" type="text" value={email} onChange={e => { setEmail(e.target.value); setError('') }} required placeholder="email or username" />
           </div>
           <div className="form-group">
-            <label>Password</label>
-            <input type="password" value={password} onChange={e => { setPassword(e.target.value); setError('') }} required placeholder="Password" />
+            <label htmlFor="login-password">Password</label>
+            <input id="login-password" name="password" type="password" value={password} onChange={e => { setPassword(e.target.value); setError('') }} required placeholder="Password" />
           </div>
           {error && <p className="error-msg">{error}</p>}
           <button type="submit" className="submit-btn" disabled={loading}>

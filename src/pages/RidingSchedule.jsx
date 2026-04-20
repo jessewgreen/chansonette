@@ -258,6 +258,7 @@ export default function RidingSchedule({ user }) {
                 }}
                 onBlur={saveLabel}
                 placeholder="e.g. WEF 12"
+                aria-label="Week label"
                 style={{
                   background: 'rgba(255,255,255,0.15)', border: '1px solid #c9a84c',
                   borderRadius: 'var(--radius-sm)', color: '#ffffff',
@@ -337,6 +338,7 @@ export default function RidingSchedule({ user }) {
               onChange={e => setNewRiderName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleAddRider(); if (e.key === 'Escape') setAddingRider(false) }}
               placeholder="Full name"
+              aria-label="New rider name"
               style={{ width: '100%', background: 'rgba(255,255,255,0.90)', border: '1px solid #c9a84c', borderRadius: 'var(--radius-sm)', color: '#0d1b4b', fontFamily: 'Arial', fontSize: '1rem', padding: '0.4rem 0.6rem', outline: 'none', boxSizing: 'border-box', marginBottom: '0.75rem' }}
             />
             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -362,6 +364,7 @@ export default function RidingSchedule({ user }) {
               onChange={e => setNewActivityName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleAddActivity(); if (e.key === 'Escape') setAddingActivity(false) }}
               placeholder="Activity name"
+              aria-label="New activity name"
               style={{ width: '100%', background: 'rgba(255,255,255,0.90)', border: '1px solid #c9a84c', borderRadius: 'var(--radius-sm)', color: '#0d1b4b', fontFamily: 'Arial', fontSize: '1rem', padding: '0.4rem 0.6rem', outline: 'none', boxSizing: 'border-box', marginBottom: '0.75rem' }}
             />
             <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -414,6 +417,7 @@ export default function RidingSchedule({ user }) {
                               if (e.target.value === '__add_rider__') { setAddingRider(true); return }
                               setCell(horse.name, day, 'rider', e.target.value)
                             }}
+                            aria-label={`Rider for ${horse.name} on ${day}`}
                             style={selectStyle}
                           >
                             <option value="">— Rider —</option>
@@ -428,6 +432,7 @@ export default function RidingSchedule({ user }) {
                               if (e.target.value === '__add_activity__') { setAddingActivity(true); return }
                               setCell(horse.name, day, 'activity', e.target.value)
                             }}
+                            aria-label={`Activity for ${horse.name} on ${day}`}
                             style={{ ...selectStyle, marginBottom: '0.25rem' }}
                           >
                             <option value="">— Activity —</option>
@@ -440,6 +445,7 @@ export default function RidingSchedule({ user }) {
                             value={cell.note}
                             onChange={e => setCell(horse.name, day, 'note', e.target.value)}
                             placeholder="note…"
+                            aria-label={`Note for ${horse.name} on ${day}`}
                             style={noteInputStyle}
                           />
                         </td>

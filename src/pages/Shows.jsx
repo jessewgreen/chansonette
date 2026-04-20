@@ -123,12 +123,26 @@ export default function Shows({ user }) {
   const [showFormData, setShowFormData] = useState(blankShow)
   const [resFormData,  setResFormData]  = useState(blankRes)
 
+  const [dataLoaded, setDataLoaded] = useState({ shows: false, notes: false })
+
   useEffect(() => {
-    getShows().then(setShows).catch(() => {})
+    getShows().then(s => { setShows(s); setDataLoaded(d => ({ ...d, shows: true })) }).catch(() => {})
     getHorses().then(setHorses).catch(() => {})
     getUsers().then(u => setStaffList(u.filter(x => x.role !== 'admin'))).catch(() => {})
-    getNotes().then(setNotes).catch(() => {})
+    getNotes().then(n => { setNotes(n); setDataLoaded(d => ({ ...d, notes: true })) }).catch(() => {})
   }, [])
+
+  useEffect(() => {
+    if (!dataLoaded.shows || !dataLoaded.notes) return
+    const todayDate = new Date()
+    setDayModal({
+      date: todayDate,
+      key: TODAY,
+      dateStr: todayDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
+      shows: showsByDate[TODAY] || [],
+      notes: notesByDate[TODAY] || [],
+    })
+  }, [dataLoaded.shows, dataLoaded.notes])
   useEffect(() => {
     if (!selected) return
     getResults(selected.id).then(setResults).catch(() => {})

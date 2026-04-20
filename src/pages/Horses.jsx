@@ -718,19 +718,19 @@ export default function Horses({ user }) {
                   <form className="card" style={{ marginBottom: '1rem' }} onSubmit={handleAddRecord}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                       <div className="form-group" style={{ margin: 0 }}>
-                        <label>Type</label>
-                        <select value={recForm.type} onChange={e => setRecForm(f => ({ ...f, type: e.target.value }))}>
+                        <label htmlFor="record-type">Type</label>
+                        <select id="record-type" name="type" value={recForm.type} onChange={e => setRecForm(f => ({ ...f, type: e.target.value }))}>
                           {RECORD_TYPES.map(t => <option key={t}>{t}</option>)}
                         </select>
                       </div>
                       <div className="form-group" style={{ margin: 0 }}>
-                        <label>Date</label>
-                        <input type="date" value={recForm.date} onChange={e => setRecForm(f => ({ ...f, date: e.target.value }))} required />
+                        <label htmlFor="record-date">Date</label>
+                        <input id="record-date" name="date" type="date" value={recForm.date} onChange={e => setRecForm(f => ({ ...f, date: e.target.value }))} required />
                       </div>
                     </div>
                     <div className="form-group" style={{ marginTop: '0.75rem', marginBottom: '0.75rem' }}>
-                      <label>Notes</label>
-                      <textarea value={recForm.description} onChange={e => setRecForm(f => ({ ...f, description: e.target.value }))} required />
+                      <label htmlFor="record-notes">Notes</label>
+                      <textarea id="record-notes" name="description" value={recForm.description} onChange={e => setRecForm(f => ({ ...f, description: e.target.value }))} required />
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
@@ -777,14 +777,14 @@ export default function Horses({ user }) {
                     <div>
                       {fieldLabel('Last Visit')}
                       {editingHealth
-                        ? <input type="date" value={farrier.lastDate} onChange={e => setFarrier(f => ({ ...f, lastDate: e.target.value }))} style={inputStyle} />
+                        ? <input type="date" value={farrier.lastDate} onChange={e => setFarrier(f => ({ ...f, lastDate: e.target.value }))} aria-label="Farrier last visit date" style={inputStyle} />
                         : <div style={{ fontFamily: 'Arial', fontSize: '0.9rem', marginTop: '0.2rem' }}>{farrier.lastDate || <span style={{ opacity: 0.4 }}>Not set</span>}</div>
                       }
                     </div>
                     <div>
                       {fieldLabel('Notes')}
                       {editingHealth
-                        ? <input value={farrier.notes} onChange={e => setFarrier(f => ({ ...f, notes: e.target.value }))} placeholder="e.g. front shoes reset" style={inputStyle} />
+                        ? <input value={farrier.notes} onChange={e => setFarrier(f => ({ ...f, notes: e.target.value }))} placeholder="e.g. front shoes reset" aria-label="Farrier notes" style={inputStyle} />
                         : <div style={{ fontFamily: 'Arial', fontSize: '0.9rem', marginTop: '0.2rem' }}>{farrier.notes || <span style={{ opacity: 0.4 }}>—</span>}</div>
                       }
                     </div>
@@ -808,14 +808,14 @@ export default function Horses({ user }) {
                           <div>
                             {fieldLabel('Last Given')}
                             {editingHealth
-                              ? <input type="date" value={v.lastDate} onChange={e => updateVaccine(i, 'lastDate', e.target.value)} style={inputStyle} />
+                              ? <input type="date" value={v.lastDate} onChange={e => updateVaccine(i, 'lastDate', e.target.value)} aria-label={`Last given date for ${v.name}`} style={inputStyle} />
                               : <div style={{ fontFamily: 'Arial', fontSize: '0.85rem', marginTop: '0.15rem' }}>{v.lastDate || <span style={{ opacity: 0.4 }}>Not set</span>}</div>
                             }
                           </div>
                           <div>
                             {fieldLabel('Next Due')}
                             {editingHealth
-                              ? <input type="date" value={v.nextDue} onChange={e => updateVaccine(i, 'nextDue', e.target.value)} style={inputStyle} />
+                              ? <input type="date" value={v.nextDue} onChange={e => updateVaccine(i, 'nextDue', e.target.value)} aria-label={`Next due date for ${v.name}`} style={inputStyle} />
                               : <div style={{ fontFamily: 'Arial', fontSize: '0.85rem', marginTop: '0.15rem', color: v.nextDue && new Date(v.nextDue) < new Date() ? '#e87070' : 'inherit' }}>{v.nextDue || <span style={{ opacity: 0.4 }}>Not set</span>}</div>
                             }
                           </div>
@@ -823,7 +823,7 @@ export default function Horses({ user }) {
                         {editingHealth && (
                           <div style={{ marginTop: '0.4rem' }}>
                             {fieldLabel('Notes')}
-                            <input value={v.notes || ''} onChange={e => updateVaccine(i, 'notes', e.target.value)} placeholder="Optional notes" style={inputStyle} />
+                            <input value={v.notes || ''} onChange={e => updateVaccine(i, 'notes', e.target.value)} placeholder="Optional notes" aria-label={`Notes for ${v.name}`} style={inputStyle} />
                           </div>
                         )}
                         {!editingHealth && v.notes && <div style={{ fontFamily: 'Arial', fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>{v.notes}</div>}

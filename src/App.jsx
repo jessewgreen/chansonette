@@ -15,14 +15,49 @@ import ToFixList from './pages/ToFixList'
 
 function App() {
   const [user,        setUser]        = useState(() => getSession())
-  const [currentPage, setCurrentPage] = useState('dashboard')
+  const parseHash = () => {
+    if (typeof window === 'undefined') return { page: 'dashboard', subPage: null }
+    const hash = window.location.hash.slice(1).replace(/^\/*/, '')
+    if (!hash) return { page: 'dashboard', subPage: null }
+    const [page, subPage] = hash.split('/', 2)
+    const validPages = new Set(['dashboard', 'horses', 'shows', 'staff', 'admin', 'packinglist', 'ridingschedule', 'shoppinglist', 'tofixlist'])
+    return {
+      page: validPages.has(page) ? page : 'dashboard',
+      subPage: page === 'packinglist' ? (subPage || null) : null,
+    }
+  }
+
+  const initialHash = parseHash()
+  const [currentPage, setCurrentPage] = useState(initialHash.page)
   const [largeText,   setLargeText]   = useState(() => localStorage.getItem('largeText') === 'true')
-  const [resourcesSubPage, setResourcesSubPage] = useState(null)
+  const [resourcesSubPage, setResourcesSubPage] = useState(initialHash.subPage)
 
   useEffect(() => {
     document.documentElement.classList.toggle('large-text', largeText)
     localStorage.setItem('largeText', largeText)
   }, [largeText])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const hash = currentPage === 'packinglist'
+      ? `#${currentPage}${resourcesSubPage ? `/${resourcesSubPage}` : ''}`
+      : `#${currentPage}`
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, '', hash)
+    }
+  }, [currentPage, resourcesSubPage])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const handleHashChange = () => {
+      const { page, subPage } = parseHash()
+      setCurrentPage(page)
+      setResourcesSubPage(page === 'packinglist' ? subPage : null)
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
 
   function handleLogin(u) {
     setUser(u)
@@ -95,7 +130,10 @@ function App() {
           </li>
           {isAdmin && <li><button className={currentPage === 'admin' ? 'active' : ''} onClick={() => setCurrentPage('admin')}>Admin</button></li>}
           <li className="nav-signout">
-            <button onClick={handleLogout} style={{ color: '#c9a84c' }}>Sign Out</button>
+            <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #c9a84c', borderRadius: '6px', color: '#c9a84c', cursor: 'pointer', fontFamily: 'Arial', fontSize: '0.75rem', fontWeight: 700, padding: '0.5rem 0.85rem', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Sign Out</button>
+            <div style={{ fontFamily: 'Arial', fontSize: '0.7rem', color: '#c9a84c', marginTop: '0.4rem', textAlign: 'center', wordBreak: 'break-word' }}>
+              {user?.name || user?.email || 'User'}
+            </div>
           </li>
         </ul>
       </nav>

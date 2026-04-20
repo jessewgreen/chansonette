@@ -10,6 +10,7 @@ import {
   signOut,
   updatePassword,
 } from 'firebase/auth'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -27,7 +28,7 @@ export async function signOutUser() {
 export async function createUser({ email, name, role, password, phone = '', homePhone = '', cell = '', address = '' }) {
   const key = email.toLowerCase().trim()
   await createUserWithEmailAndPassword(auth, key, password)
-  await setDoc(doc(db, 'users', key), { name, role, phone, homePhone, cell, address, email: key, mustChangePassword: true })
+  await setDoc(doc(db, 'users', key), { name, role, phone, homePhone, cell, address, email: key, mustChangePassword: true, tempPassword: password })
 }
 
 export async function getUsers() {
@@ -43,12 +44,36 @@ export async function updateUserPassword(newPassword) {
   const currentUser = auth.currentUser
   if (!currentUser) throw new Error('No authenticated user')
   await updatePassword(currentUser, newPassword)
-  await updateDoc(doc(db, 'users', currentUser.email), { mustChangePassword: false })
+  await updateDoc(doc(db, 'users', currentUser.email), { mustChangePassword: false, tempPassword: null })
+}
+
+export async function resetUserPassword(email, newPassword) {
+  const fn = httpsCallable(getFunctions(), 'resetUserPassword')
+  await fn({ email, newPassword })
+  return newPassword
 }
 
 export async function updateUserProfile(email, data) {
   const key = email.toLowerCase().trim()
   await updateDoc(doc(db, 'users', key), data)
+}
+
+export async function updateUserEmail(oldEmail, newEmail, otherData) {
+  const oldKey = oldEmail.toLowerCase().trim()
+  const newKey = newEmail.toLowerCase().trim()
+  
+  // Get the old document
+  const snap = await getDoc(doc(db, 'users', oldKey))
+  if (!snap.exists()) throw new Error('User not found')
+  
+  const userData = snap.data()
+  
+  // Create new document with updated email and other data
+  const newData = { ...userData, email: newKey, ...otherData }
+  await setDoc(doc(db, 'users', newKey), newData)
+  
+  // Delete old document
+  await deleteDoc(doc(db, 'users', oldKey))
 }
 
 export async function updateUserRole(email, role) {

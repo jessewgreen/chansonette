@@ -365,7 +365,7 @@ export default function Staff({ user }) {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontFamily: 'Georgia', fontSize: '1.2rem', color: '#0d1b4b', marginBottom: '0.15rem' }}>{u.name}</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem 1rem', fontFamily: 'Arial', fontSize: '0.78rem', color: '#2d3a4a' }}>
-                        {u.email && <span>{u.email}</span>}
+                        {isAdmin && u.email && <span>{u.email}</span>}
                         {u.phone && <span>📞 {u.phone}</span>}
                         {u.homePhone && <span>🏠 {u.homePhone}</span>}
                         {u.cell && <span>📱 {u.cell}</span>}

@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PackingList from './PackingList'
 import Staff from './Staff'
 import Vendors from './Vendors'
+import ShoppingList from './ShoppingList'
+import ToFixList from './ToFixList'
 
 const RESOURCES = [
   {
     id: 'packinglist',
     label: 'Packing Lists',
     description: 'Show packing checklists by event',
-    img: '/clipboard checklist.png',
+    img: '/Road Case.png',
   },
   {
     id: 'staff',
@@ -20,82 +22,70 @@ const RESOURCES = [
     id: 'vendors',
     label: 'Vendors',
     description: 'Vets, farriers, suppliers & contacts',
-    img: '/Blacksmith forging a horseshoe silhouette.png',
-    img2: '/Veterinarian examines horse in silhouette.png',
+    img: "/Tools of the farrier's trade.png",
+  },
+  {
+    id: 'shoppinglist',
+    label: 'Shopping List',
+    description: 'Supplies and items to order',
+    img: '/Supplies for shopping list PNG.png',
+  },
+  {
+    id: 'tofixlist',
+    label: 'Fix It List',
+    description: 'Repairs and maintenance tasks',
+    img: '/Broken Fence.png',
   },
 ]
 
+const BACK_BTN_STYLE = {
+  background: 'none', border: 'none', color: 'var(--text-muted)',
+  fontFamily: 'Arial', fontSize: '0.8rem', letterSpacing: '0.06em',
+  cursor: 'pointer', padding: '0', display: 'flex', alignItems: 'center',
+  gap: '0.35rem', marginBottom: '1.5rem', transition: 'color 0.15s',
+}
+
+function BackButton({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={BACK_BTN_STYLE}
+      onMouseEnter={e => e.currentTarget.style.color = 'var(--text)'}
+      onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+    >
+      ← Resources
+    </button>
+  )
+}
+
 export default function Resources({ user, canManageStaff, initialSubPage, onSubPageChange }) {
   const [subPage, setSubPage] = useState(initialSubPage || null)
+
+  useEffect(() => { setSubPage(initialSubPage || null) }, [initialSubPage])
 
   function goTo(page) {
     setSubPage(page)
     onSubPageChange?.(page)
   }
 
-  const visibleResources = RESOURCES
-
   if (subPage === 'packinglist') {
-    return (
-      <div>
-        <button
-          onClick={() => goTo(null)}
-          style={{
-            background: 'none', border: 'none', color: 'var(--text-muted)',
-            fontFamily: 'Arial', fontSize: '0.8rem', letterSpacing: '0.06em',
-            cursor: 'pointer', padding: '0', display: 'flex', alignItems: 'center',
-            gap: '0.35rem', marginBottom: '1.5rem', transition: 'color 0.15s',
-          }}
-          onMouseEnter={e => e.currentTarget.style.color = 'var(--text)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
-        >
-          ← Resources
-        </button>
-        <PackingList user={user} />
-      </div>
-    )
+    return <div><BackButton onClick={() => goTo(null)} /><PackingList user={user} /></div>
   }
 
   if (subPage === 'vendors' || subPage === 'vendors_add') {
-    return (
-      <div>
-        <button
-          onClick={() => goTo(null)}
-          style={{
-            background: 'none', border: 'none', color: 'var(--text-muted)',
-            fontFamily: 'Arial', fontSize: '0.8rem', letterSpacing: '0.06em',
-            cursor: 'pointer', padding: '0', display: 'flex', alignItems: 'center',
-            gap: '0.35rem', marginBottom: '1.5rem', transition: 'color 0.15s',
-          }}
-          onMouseEnter={e => e.currentTarget.style.color = 'var(--text)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
-        >
-          ← Resources
-        </button>
-        <Vendors user={user} openAddForm={subPage === 'vendors_add'} />
-      </div>
-    )
+    return <div><BackButton onClick={() => goTo(null)} /><Vendors user={user} openAddForm={subPage === 'vendors_add'} /></div>
   }
 
   if (subPage === 'staff') {
-    return (
-      <div>
-        <button
-          onClick={() => goTo(null)}
-          style={{
-            background: 'none', border: 'none', color: 'var(--text-muted)',
-            fontFamily: 'Arial', fontSize: '0.8rem', letterSpacing: '0.06em',
-            cursor: 'pointer', padding: '0', display: 'flex', alignItems: 'center',
-            gap: '0.35rem', marginBottom: '1.5rem', transition: 'color 0.15s',
-          }}
-          onMouseEnter={e => e.currentTarget.style.color = 'var(--text)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
-        >
-          ← Resources
-        </button>
-        <Staff user={user} />
-      </div>
-    )
+    return <div><BackButton onClick={() => goTo(null)} /><Staff user={user} /></div>
+  }
+
+  if (subPage === 'shoppinglist') {
+    return <div><BackButton onClick={() => goTo(null)} /><ShoppingList user={user} /></div>
+  }
+
+  if (subPage === 'tofixlist') {
+    return <div><BackButton onClick={() => goTo(null)} /><ToFixList user={user} /></div>
   }
 
   return (
@@ -104,7 +94,7 @@ export default function Resources({ user, canManageStaff, initialSubPage, onSubP
       <p className="page-subtitle">Chansonette Farm</p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
-        {visibleResources.map(r => (
+        {RESOURCES.map(r => (
           <div
             key={r.id}
             className="card card-gold"

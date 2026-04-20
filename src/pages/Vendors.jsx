@@ -82,6 +82,16 @@ If a field is not found, use empty string "".`,
 }
 
 const CATEGORIES = ['Vet', 'Farrier', 'Feed', 'Tack', 'Transport', 'Grooming', 'Other']
+
+const CATEGORY_META = {
+  Vet:       { label: 'Veterinarians', img: '/Veterinarian examines horse in silhouette.png' },
+  Farrier:   { label: 'Farriers',      img: '/Blacksmith forging a horseshoe silhouette.png' },
+  Grooming:  { label: 'Grooming',      img: '/Grooming Tools.png',  imgStyle: { width: '100%', height: '130px', objectFit: 'cover' } },
+  Tack:      { label: 'Tack',          img: '/Tack Wall.png' },
+  Transport: { label: 'Transport',     img: '/Horse Trailer.png',   imgStyle: { width: '100%', height: '130px', objectFit: 'cover' } },
+  Feed:      { label: 'Feed',          img: '/Hay Bails.png',       imgStyle: { width: '100%', height: '130px', objectFit: 'cover' } },
+  Other:     { label: 'Other',         img: null },
+}
 const blank = { name: '', category: '', phone: '', email: '', website: '', notes: '', cardPhotoUrl: '' }
 
 export default function Vendors({ user, openAddForm = false }) {
@@ -90,12 +100,12 @@ export default function Vendors({ user, openAddForm = false }) {
                   user?.additionalRoles?.includes('admin')
   const canAdd = true
 
-  const [vendors,    setVendors]    = useState([])
-  const [showForm,   setShowForm]   = useState(openAddForm)
-  const [formData,   setFormData]   = useState(blank)
-  const [editingId,  setEditingId]  = useState(null)
-  const [saving,     setSaving]     = useState(false)
-  const [filter,     setFilter]     = useState('All')
+  const [vendors,      setVendors]      = useState([])
+  const [showForm,     setShowForm]     = useState(openAddForm)
+  const [formData,     setFormData]     = useState(blank)
+  const [editingId,    setEditingId]    = useState(null)
+  const [saving,       setSaving]       = useState(false)
+  const [categoryView, setCategoryView] = useState(openAddForm ? 'All' : null)
 
   // Card scan state
   const [scanning,      setScanning]      = useState(false)
@@ -195,23 +205,55 @@ export default function Vendors({ user, openAddForm = false }) {
     setShowForm(true)
   }
 
-  const categories = ['All', ...CATEGORIES]
-  const filtered = filter === 'All' ? vendors : vendors.filter(v => v.category === filter)
+  const filtered = categoryView && categoryView !== 'All'
+    ? vendors.filter(v => v.category === categoryView)
+    : vendors
+
+  if (!categoryView) {
+    return (
+      <div className="page">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div>
+            <h2>Vendors</h2>
+            <p className="page-subtitle">Chansonette Farm</p>
+          </div>
+          {canAdd && <button className="btn btn-primary btn-sm" onClick={() => { setFormData(blank); setEditingId(null); setCardPreview(null); setCardFile(null); setCategoryView('All'); setShowForm(true) }}>+ Add Vendor</button>}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
+          {CATEGORIES.map(c => {
+            const meta = CATEGORY_META[c]
+            const count = vendors.filter(v => v.category === c).length
+            return (
+              <div key={c} className="card card-gold" style={{ cursor: 'pointer', textAlign: 'center' }} onClick={() => setCategoryView(c)}>
+                <div style={{ height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem' }}>
+                  {meta.img
+                    ? <img src={meta.img} alt={meta.label} style={meta.imgStyle || { height: '130px', maxWidth: '100%', objectFit: 'contain' }} />
+                    : <span style={{ fontSize: '2.5rem' }}>🏷️</span>
+                  }
+                </div>
+                <div style={{ fontFamily: 'Georgia', fontSize: '1.4rem', color: 'var(--gold)', marginBottom: '0.2rem' }}>{meta.label}</div>
+                <div style={{ fontFamily: 'Arial', fontSize: '0.75rem', color: 'var(--text-muted)' }}>{count} {count === 1 ? 'vendor' : 'vendors'}</div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="page">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-        <h2>Vendors</h2>
-        {canAdd && <button className="btn btn-primary btn-sm" onClick={() => { setFormData(blank); setEditingId(null); setCardPreview(null); setCardFile(null); setShowForm(true) }}>+ Add Vendor</button>}
-      </div>
-
-      {/* Category filter */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1.1rem' }}>
-        {categories.map(c => (
-          <button key={c} onClick={() => setFilter(c)}
-            style={{ background: filter === c ? '#b84a1a' : 'rgba(36,86,174,0.10)', border: `1px solid ${filter === c ? '#8f3712' : 'var(--border)'}`, borderRadius: '999px', color: filter === c ? '#ffffff' : 'var(--text)', fontFamily: 'Arial', fontSize: '0.8rem', padding: '0.3rem 0.85rem', cursor: 'pointer' }}
-          >{c}</button>
-        ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button
+            onClick={() => setCategoryView(null)}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontFamily: 'Arial', fontSize: '0.8rem', letterSpacing: '0.06em', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--text)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+          >← Vendors</button>
+          <h2 style={{ margin: 0 }}>{CATEGORY_META[categoryView]?.label ?? categoryView}</h2>
+        </div>
+        {canAdd && <button className="btn btn-primary btn-sm" onClick={() => { setFormData({ ...blank, category: categoryView !== 'All' ? categoryView : '' }); setEditingId(null); setCardPreview(null); setCardFile(null); setShowForm(true) }}>+ Add Vendor</button>}
       </div>
 
       {filtered.length === 0 && <p style={{ opacity: 0.5, fontFamily: 'Arial', fontSize: '0.85rem' }}>No vendors yet.</p>}
@@ -310,18 +352,18 @@ export default function Vendors({ user, openAddForm = false }) {
             </div>
 
             {/* ── Manual fields ── */}
-            <div className="form-group"><label>Name</label><input value={formData.name} onChange={e => setFormData(f => ({ ...f, name: e.target.value }))} required /></div>
+            <div className="form-group"><label htmlFor="vendor-name">Name</label><input id="vendor-name" name="name" value={formData.name} onChange={e => setFormData(f => ({ ...f, name: e.target.value }))} required /></div>
             <div className="form-group">
-              <label>Category</label>
-              <select value={formData.category} onChange={e => setFormData(f => ({ ...f, category: e.target.value }))}>
+              <label htmlFor="vendor-category">Category</label>
+              <select id="vendor-category" name="category" value={formData.category} onChange={e => setFormData(f => ({ ...f, category: e.target.value }))}>
                 <option value="">— Select —</option>
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            <div className="form-group"><label>Phone</label><input value={formData.phone} onChange={e => setFormData(f => ({ ...f, phone: e.target.value }))} placeholder="e.g. (555) 123-4567" /></div>
-            <div className="form-group"><label>Email</label><input type="email" value={formData.email} onChange={e => setFormData(f => ({ ...f, email: e.target.value }))} /></div>
-            <div className="form-group"><label>Website</label><input value={formData.website} onChange={e => setFormData(f => ({ ...f, website: e.target.value }))} placeholder="https://..." /></div>
-            <div className="form-group"><label>Notes</label><textarea value={formData.notes} onChange={e => setFormData(f => ({ ...f, notes: e.target.value }))} rows={2} /></div>
+            <div className="form-group"><label htmlFor="vendor-phone">Phone</label><input id="vendor-phone" name="phone" value={formData.phone} onChange={e => setFormData(f => ({ ...f, phone: e.target.value }))} placeholder="e.g. (555) 123-4567" /></div>
+            <div className="form-group"><label htmlFor="vendor-email">Email</label><input id="vendor-email" name="email" type="email" value={formData.email} onChange={e => setFormData(f => ({ ...f, email: e.target.value }))} /></div>
+            <div className="form-group"><label htmlFor="vendor-website">Website</label><input id="vendor-website" name="website" value={formData.website} onChange={e => setFormData(f => ({ ...f, website: e.target.value }))} placeholder="https://..." /></div>
+            <div className="form-group"><label htmlFor="vendor-notes">Notes</label><textarea id="vendor-notes" name="notes" value={formData.notes} onChange={e => setFormData(f => ({ ...f, notes: e.target.value }))} rows={2} /></div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
               <button type="button" className="btn btn-outline" onClick={closeForm}>Cancel</button>

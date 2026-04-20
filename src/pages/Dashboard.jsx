@@ -29,7 +29,7 @@ export default function Dashboard({ user, onNavigate }) {
     {
       label: 'Barn "To Fix" List',
       page:  'tofixlist',
-      img:   "/Tools of the farrier's trade.png",
+      img:   '/Broken Fence.png',
     },
   ]
 
